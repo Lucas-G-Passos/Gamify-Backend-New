@@ -20,11 +20,9 @@ public class DailyDataController {
 
     @GetMapping
     public List<WorkoutDto> getAllWorkouts(Authentication authentication) {
-        // Extract email from JWT
         Jwt jwt = (Jwt) authentication.getPrincipal();
         String email = jwt.getClaimAsString("sub");
 
-        // Delegate to service
         return workoutService.getWorkoutsByUserEmail(email);
     }
 }
