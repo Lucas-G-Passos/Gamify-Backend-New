@@ -2,6 +2,8 @@ package org.gamify.gym.app.user.model;
 
 import java.util.List;
 
+import org.gamify.gym.app.streak.model.PlayerActivity;
+import org.gamify.gym.app.streak.model.StreakInterruption;
 import org.gamify.gym.app.training.model.Workout;
 
 import jakarta.persistence.CascadeType;
@@ -91,4 +93,10 @@ public class Player {
     @ManyToOne
     @JoinColumn(name = "nutritionist_id")
     private Nutritionist nutritionist;
+
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PlayerActivity> activities;
+
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<StreakInterruption> streakInterruptions;
 }
