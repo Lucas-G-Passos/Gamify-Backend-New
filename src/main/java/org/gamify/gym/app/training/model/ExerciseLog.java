@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import org.gamify.gym.app.user.model.Player;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "exercises_logs")
 public class ExerciseLog {
@@ -22,6 +24,7 @@ public class ExerciseLog {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "player_id")
+    @JsonBackReference
     private Player player;
 
     @ManyToOne(fetch = FetchType.LAZY)

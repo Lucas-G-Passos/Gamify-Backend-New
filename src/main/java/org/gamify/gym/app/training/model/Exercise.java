@@ -1,31 +1,45 @@
 package org.gamify.gym.app.training.model;
 
-import jakarta.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "exercises")
 public class Exercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id_exercise")
     private Long id;
 
+    @Column(name = "name_exercise")
     private String name_exercise;
 
+    @Column
     private String muscles;
 
+    @Column
     private Integer repeticoes;
 
+    @Column
     private Integer series;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "id_workout")
+    @ManyToOne
+    @JoinColumn(name = "workout_id", nullable = false)
+    @JsonBackReference
     private Workout workout;
 
-    @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<ExerciseLog> exerciseLogs = new HashSet<>();
+    @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
+    private List<ExerciseLog> exerciseLogs;
 
     public Long getId() {
         return id;
@@ -75,11 +89,11 @@ public class Exercise {
         this.workout = workout;
     }
 
-    public Set<ExerciseLog> getExerciseLogs() {
+    public List<ExerciseLog> getExerciseLogs() {
         return exerciseLogs;
     }
 
-    public void setExerciseLogs(Set<ExerciseLog> exerciseLogs) {
+    public void setExerciseLogs(List<ExerciseLog> exerciseLogs) {
         this.exerciseLogs = exerciseLogs;
     }
 }

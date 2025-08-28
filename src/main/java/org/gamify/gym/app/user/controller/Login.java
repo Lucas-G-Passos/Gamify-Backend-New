@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.gamify.gym.app.user.dto.LoginRequest;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @RestController
 public class Login {
@@ -33,6 +34,11 @@ public class Login {
             String errorMsg = e.getMessage() != null ? e.getMessage() : e.toString();
             return "{\"error\": \"Erro ao fazer login: " + errorMsg.replace("\"", "'") + "\"}";
         }
+    }
+
+    @GetMapping(value = "/check", produces = "application/json")
+    public String check() {
+        return "{\"valid\": \"true\"}";
     }
 
 }

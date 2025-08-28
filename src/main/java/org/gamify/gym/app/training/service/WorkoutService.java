@@ -6,6 +6,7 @@ import org.gamify.gym.app.training.dto.ExerciseLogDto;
 import org.gamify.gym.app.training.model.Workout;
 import org.gamify.gym.app.training.model.Exercise;
 import org.gamify.gym.app.training.repository.WorkoutRepository;
+import org.gamify.gym.app.training.repository.ExerciseRepository;
 import org.gamify.gym.app.user.model.Player;
 import org.gamify.gym.app.user.repository.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,38 @@ public class WorkoutService {
         @Autowired
         private WorkoutRepository workoutRepository;
 
+        @Autowired
+        private ExerciseRepository exerciseRepository;
+
         @Transactional(readOnly = true)
         public List<WorkoutDto> getWorkoutsByUserEmail(String email) {
                 Player player = playerRepository.findByUserEmail(email)
                                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                                                 "Player not found for user with email: " + email));
 
-                List<Workout> workouts = workoutRepository.findByPlayerWithExercisesAndLogs(player);
+                // Fetch workouts with exercises
+                List<Workout> workouts = workoutRepository.findByPlayerWithExercises(player);
+
+                // Collect all exercise IDs
+                List<Long> exerciseIds = workouts.stream()
+                                .flatMap(workout -> workout.getExercises().stream())
+                                .map(Exercise::getId)
+                                .collect(Collectors.toList());
+
+                // Fetch exercises with their logs
+                List<Exercise> exercisesWithLogs = exerciseRepository.findByIdsWithLogs(exerciseIds);
+
+                // Update exercises in workouts with their logs
+                workouts.forEach(workout -> {
+                        workout.getExercises().forEach(exercise -> {
+                                exercisesWithLogs.stream()
+                                                .filter(e -> e.getId().equals(exercise.getId()))
+                                                .findFirst()
+                                                .ifPresent(e -> exercise.setExerciseLogs(e.getExerciseLogs()));
+                        });
+                });
+
+                // Transform to DTOs
                 return workouts.stream().map(workout -> {
                         List<ExerciseDto> exerciseDtos = workout.getExercises().stream()
                                         .map(exercise -> {
@@ -54,7 +80,7 @@ public class WorkoutService {
                                         .mapToInt(Exercise::getSeries)
                                         .sum();
                         return new WorkoutDto(
-                                        workout.getName_workout(),
+                                        workout.getName(),
                                         exerciseDtos,
                                         exerciseDtos.size(),
                                         totalSeries);

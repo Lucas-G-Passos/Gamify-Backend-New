@@ -6,6 +6,8 @@ import org.gamify.gym.app.streak.model.PlayerActivity;
 import org.gamify.gym.app.streak.model.StreakInterruption;
 import org.gamify.gym.app.training.model.Workout;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,6 +34,7 @@ public class Player {
     private Double weight;
 
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Workout> workouts;
 
     public List<Workout> getWorkouts() {
@@ -95,6 +98,7 @@ public class Player {
     private Nutritionist nutritionist;
 
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<PlayerActivity> activities;
 
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
