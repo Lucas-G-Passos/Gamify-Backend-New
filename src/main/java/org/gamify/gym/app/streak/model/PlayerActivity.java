@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -18,6 +20,10 @@ import jakarta.persistence.GenerationType;
 
 @Entity
 public class PlayerActivity {
+    public enum Status {
+        OK, BROKEN, SKIP
+    };
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id_playerActivity;
@@ -25,8 +31,8 @@ public class PlayerActivity {
     @Column(columnDefinition = "DATE")
     private LocalDate activeDate;
 
-    @Column
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @ManyToOne
     @JoinColumn(name = "player_id", nullable = false)
@@ -41,6 +47,10 @@ public class PlayerActivity {
         return id_playerActivity;
     }
 
+    public void setId_playerActivity(long id_playerActivity) {
+        this.id_playerActivity = id_playerActivity;
+    }
+
     public LocalDate getActiveDate() {
         return activeDate;
     }
@@ -49,19 +59,11 @@ public class PlayerActivity {
         this.activeDate = activeDate;
     }
 
-    public Workout getWorkout() {
-        return workout;
-    }
-
-    public void setWorkout(Workout workout) {
-        this.workout = workout;
-    }
-
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -71,5 +73,13 @@ public class PlayerActivity {
 
     public void setPlayer(Player player) {
         this.player = player;
+    }
+
+    public Workout getWorkout() {
+        return workout;
+    }
+
+    public void setWorkout(Workout workout) {
+        this.workout = workout;
     }
 }

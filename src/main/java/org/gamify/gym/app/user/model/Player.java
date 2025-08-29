@@ -3,7 +3,6 @@ package org.gamify.gym.app.user.model;
 import java.util.List;
 
 import org.gamify.gym.app.streak.model.PlayerActivity;
-import org.gamify.gym.app.streak.model.StreakInterruption;
 import org.gamify.gym.app.training.model.Workout;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -100,7 +99,4 @@ public class Player {
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<PlayerActivity> activities;
-
-    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<StreakInterruption> streakInterruptions;
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.gamify.gym.app.streak.model.PlayerActivity;
+import org.gamify.gym.app.streak.model.PlayerActivity.Status;
 import org.gamify.gym.app.streak.repository.PlayerActivityRepository;
 import org.gamify.gym.app.training.model.Workout;
 import org.gamify.gym.app.training.repository.WorkoutRepository;
@@ -34,7 +35,7 @@ public class StreakService {
     }
 
     @Transactional
-    public PlayerActivity insertDailyActivity(String email, String status,
+    public PlayerActivity insertDailyActivity(String email, Status status,
             Optional<String> workoutName) {
         Player player = playerRepository.findByUserEmail(email)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
